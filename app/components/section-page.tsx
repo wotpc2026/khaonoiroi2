@@ -18,7 +18,7 @@ const titles: Record<string, [string, string]> = {
 };
 
 function Header({ title, subtitle }: { title: string; subtitle: string }) {
-  return <header className="mb-6 border-l-4 border-gold pl-4"><p className="text-xs font-bold uppercase tracking-[0.25em] text-gold">POLICE CADET BATCH 63</p><h1 className="mt-1 text-3xl font-bold text-navy">{title}</h1><p className="mt-1 text-navy/65">{subtitle}</p></header>;
+  return <header className="mb-6 border-l-4 border-gold pl-4"><p className="text-xs font-bold uppercase tracking-[0.25em] text-gold">KHAONOI ROI2 63</p><h1 className="mt-1 text-3xl font-bold text-navy">{title}</h1><p className="mt-1 text-navy/65">{subtitle}</p></header>;
 }
 
 function Roster() {

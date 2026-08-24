@@ -10,8 +10,8 @@ const mali = Mali({
 });
 
 export const metadata: Metadata = {
-  title: 'กองร้อย นสต. รุ่น 63',
-  description: 'ระบบสารสนเทศและทำเนียบรุ่น กองร้อยนักเรียนนายสิบตำรวจ กองร้อยที่ 2 อาคาร 4 รุ่น 63',
+  title: 'KHAONOI ROI2 63 | เขาน้อยร้อย 2 รุ่น 63 นสต',
+  description: 'ข้อมูลกองร้อยที่ 2 อาคาร 4 รุ่น 63',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
