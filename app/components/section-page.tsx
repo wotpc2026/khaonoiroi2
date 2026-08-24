@@ -31,7 +31,8 @@ function Generic({ section }: { section: string }) {
   const [records, setRecords] = useState<Record<string, unknown>[]>([]); const [filter, setFilter] = useState('');
   const isStaff = ['fees', 'duty', 'countdown', 'readiness', 'announcements', 'gallery', 'wall-of-fame', 'raffle', 'bmi'].includes(section);
   const tableName = section === 'announcements' ? 'announcements' : section === 'countdown' ? 'countdown_events' : section === 'readiness' ? 'readiness_lists' : section === 'gallery' ? 'gallery_albums' : section === 'wall-of-fame' ? 'wall_of_fame' : section === 'duty' ? 'duty_schedule' : section === 'bmi' ? 'bmi_records' : section === 'fees' ? 'fee_months' : null;
-  useEffect(() => { if (tableName) createClient().from(tableName).select('*').order('created_at', { ascending: false }).then(({ data }) => setRecords((data ?? []) as Record<string, unknown>[])); }, [tableName]);
+  const orderColumn = section === 'fees' ? 'month_order' : ['duty', 'countdown', 'gallery', 'wall-of-fame'].includes(section) ? 'id' : 'created_at';
+  useEffect(() => { if (tableName) createClient().from(tableName).select('*').order(orderColumn, { ascending: section === 'fees' }).then(({ data }) => setRecords((data ?? []) as Record<string, unknown>[])); }, [orderColumn, tableName, section]);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); const title = String(form.get('title') ?? ''); const detail = String(form.get('detail') ?? '');
     const table = section === 'announcements' ? 'announcements' : section === 'countdown' ? 'countdown_events' : section === 'readiness' ? 'readiness_lists' : section === 'gallery' ? 'gallery_albums' : section === 'wall-of-fame' ? 'wall_of_fame' : section === 'duty' ? 'duty_schedule' : null;
