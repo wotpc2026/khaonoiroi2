@@ -9,7 +9,7 @@ const config: Config = {
         gold: '#C9A227',
         cream: '#F7F3E8',
         pine: '#2D5F4E',
-        slate: '#E8E1D1',
+        paper: '#E8E1D1',
         ember: '#B85C38',
       },
       boxShadow: {
