@@ -42,6 +42,10 @@ npm run dev
 
 คอลัมน์ที่รองรับคือ `ลำดับ`, `รหัส นสต.`, `ยศ ชื่อ-สกุล`, `หมวด`, `หมู่`, `ส่วนสูง`, `น้ำหนัก`, `BMI` และ `การประเมิน` โดย script จะใช้ `student_code` เป็น key และสร้าง BMI จากส่วนสูง/น้ำหนักในแต่ละแถว
 
+## สร้าง staff คนแรก
+
+หลัง import รายชื่อและเปิดใช้ trigger ใน `schema.sql` ให้ตั้งค่า `STAFF_PASSWORD` ชั่วคราวในเครื่อง แล้วรัน `npm run bootstrap:staff` เพื่อสร้างบัญชีรหัส `๒-๑๒๕` และกำหนด role เป็น `staff` เช่น PowerShell: `$env:STAFF_PASSWORD='ตั้งรหัสผ่านใหม่ที่ไม่ใช้ซ้ำ'; $env:STAFF_STUDENT_CODE='๒-๑๒๕'; npm run bootstrap:staff` ห้ามใส่รหัสผ่านจริงใน Git หรือ `.env` ที่ deploy
+
 ## Deploy Vercel
 
 ตั้งค่า `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` และ `NEXT_PUBLIC_APP_URL` ใน Vercel Project Settings แล้ว deploy ด้วย `vercel --prod` หรือเชื่อม Git repository ให้ Vercel build อัตโนมัติ

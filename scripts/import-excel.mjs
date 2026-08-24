@@ -9,11 +9,12 @@ const sheet = workbook.Sheets[workbook.SheetNames[0]];
 const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 const text = (value) => String(value ?? '').trim();
 const sql = (value) => `'${text(value).replace(/'/g, "''")}'`;
+const thaiNumber = (value) => Number(text(value).replace(/[๐-๙]/g, (digit) => '๐๑๒๓๔๕๖๗๘๙'.indexOf(digit))) || 0;
 let platoon = 1; let squad = 1; const output = [];
 for (const row of rows) {
-  const marker = text(row[0]).match(/หมู่\s*(\d+)\s*หมวด\s*(\d+)/);
-  if (marker) { squad = Number(marker[1]); platoon = Number(marker[2]); continue; }
-  const order = Number(row[0]);
+  const marker = text(row[0]).match(/หมู่\s*([๐-๙\d]+)\s*หมวด\s*([๐-๙\d]+)/);
+  if (marker) { squad = thaiNumber(marker[1]); platoon = thaiNumber(marker[2]); continue; }
+  const order = thaiNumber(row[0]);
   if (!order || !text(row[1]) || !text(row[2])) continue;
   const code = text(row[1]); const name = text(row[2]);
   output.push(`insert into students (order_no, student_code, full_name, platoon, squad) values (${order}, ${sql(code)}, ${sql(name)}, ${platoon}, ${squad}) on conflict (student_code) do update set order_no = excluded.order_no, full_name = excluded.full_name, platoon = excluded.platoon, squad = excluded.squad;`);

@@ -155,8 +155,12 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', new.email));
+  insert into public.profiles (id, student_id, full_name)
+  values (
+    new.id,
+    (select id from public.students where student_code = new.raw_user_meta_data->>'student_code'),
+    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'student_code', new.email)
+  );
   return new;
 end;
 $$;
