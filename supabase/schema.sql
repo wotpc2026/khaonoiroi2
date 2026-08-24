@@ -187,6 +187,26 @@ alter table gallery_photos enable row level security;
 alter table wall_of_fame enable row level security;
 alter table raffle_draws enable row level security;
 
+do $$
+declare
+  policy_record record;
+begin
+  for policy_record in
+    select policyname, tablename
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = any (array[
+        'profiles', 'students', 'bmi_records', 'fee_months', 'fee_payments',
+        'duty_types', 'duty_schedule', 'duty_assignments', 'countdown_events',
+        'readiness_lists', 'readiness_members', 'announcements',
+        'gallery_albums', 'gallery_photos', 'wall_of_fame', 'raffle_draws'
+      ])
+  loop
+    execute format('drop policy if exists %I on public.%I', policy_record.policyname, policy_record.tablename);
+  end loop;
+end;
+$$;
+
 create or replace function public.is_staff()
 returns boolean
 language sql
