@@ -2,8 +2,10 @@
 
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Shuffle, Plus, Download, LockKeyhole } from 'lucide-react';
+import { Search, Shuffle, Plus, LockKeyhole } from 'lucide-react';
 import { createClient } from '../../lib/supabase/browser';
+import { BmiView } from './bmi-view';
+import { normalizeStudentCode } from '../../lib/student-code';
 
 type Student = { order_no: number; student_code: string; full_name: string; platoon: number; squad: number; phone?: string | null };
 
@@ -22,8 +24,9 @@ function Header({ title, subtitle }: { title: string; subtitle: string }) {
 function Roster() {
   const [query, setQuery] = useState(''); const [platoon, setPlatoon] = useState('ทั้งหมด'); const [students, setStudents] = useState<Student[]>([]); const [error, setError] = useState('');
   useEffect(() => { createClient().from('students').select('order_no,student_code,full_name,platoon,squad,phone').order('order_no').then(({ data, error: queryError }) => { if (queryError) setError(queryError.message); else setStudents((data ?? []) as Student[]); }); }, []);
-  const filtered = useMemo(() => students.filter((row) => (platoon === 'ทั้งหมด' || row.platoon === Number(platoon)) && `${row.full_name} ${row.student_code}`.includes(query)), [query, platoon, students]);
-  return <><div className="mb-4 flex flex-col gap-3 md:flex-row"><label className="relative flex-1"><Search className="absolute left-3 top-3 text-navy/40" size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ค้นหาชื่อหรือรหัส" className="control pl-10" /></label><select value={platoon} onChange={(event) => setPlatoon(event.target.value)} className="control md:max-w-48"><option>ทั้งหมด</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>หมวด {item}</option>)}</select><button className="button-primary"><Download size={17} /> Export</button></div>{error && <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<div className="overflow-x-auto panel"><table className="w-full text-left text-sm"><thead><tr className="border-b bg-navy text-white"><th className="p-3">ลำดับ</th><th className="p-3">รหัส</th><th className="p-3">ยศ ชื่อ - สกุล</th><th className="p-3">หมวด / หมู่</th><th className="p-3">จัดการ</th></tr></thead><tbody>{filtered.length ? filtered.map((row) => <tr key={row.order_no} className="border-b last:border-0 hover:bg-gold/5"><td className="p-3 font-semibold">{row.order_no}</td><td className="p-3">{row.student_code}</td><td className="p-3 font-semibold">{row.full_name}</td><td className="p-3">หมวด {row.platoon} / หมู่ {row.squad}</td><td className="p-3"><button className="text-navy underline">ดูโปรไฟล์</button></td></tr>) : <tr><td colSpan={5} className="p-8 text-center text-navy/60">ยังไม่มีรายชื่อในฐานข้อมูล</td></tr>}</tbody></table></div></>;
+  const normalizedQuery = normalizeStudentCode(query);
+  const filtered = useMemo(() => students.filter((row) => (platoon === 'ทั้งหมด' || row.platoon === Number(platoon)) && (`${row.full_name} ${normalizeStudentCode(row.student_code)}`).includes(normalizedQuery)), [normalizedQuery, platoon, students]);
+  return <><div className="mb-4 flex flex-col gap-3 md:flex-row"><label className="relative flex-1"><Search className="absolute left-3 top-3 text-navy/40" size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ค้นหาชื่อหรือรหัส (ไทย/อารบิก)" className="control pl-10" /></label><select value={platoon} onChange={(event) => setPlatoon(event.target.value)} className="control md:max-w-48"><option>ทั้งหมด</option>{[1, 2, 3, 4].map((item) => <option key={item} value={item}>หมวด {item}</option>)}</select></div>{error && <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<div className="overflow-x-auto panel"><table className="w-full text-left text-sm"><thead><tr className="border-b bg-navy text-white"><th className="p-3">ลำดับ</th><th className="p-3">รหัส</th><th className="p-3">ยศ ชื่อ - สกุล</th><th className="p-3">หมวด / หมู่</th><th className="p-3">จัดการ</th></tr></thead><tbody>{filtered.length ? filtered.map((row) => <tr key={row.order_no} className="border-b last:border-0 hover:bg-gold/5"><td className="p-3 font-semibold">{row.order_no}</td><td className="p-3">{row.student_code}</td><td className="p-3 font-semibold">{row.full_name}</td><td className="p-3">หมวด {row.platoon} / หมู่ {row.squad}</td><td className="p-3"><Link href={`/roster/${encodeURIComponent(row.student_code)}`} className="text-navy underline">ดูโปรไฟล์</Link></td></tr>) : <tr><td colSpan={5} className="p-8 text-center text-navy/60">ยังไม่มีรายชื่อในฐานข้อมูล</td></tr>}</tbody></table></div></>;
 }
 
 function Generic({ section }: { section: string }) {
@@ -50,5 +53,5 @@ function Generic({ section }: { section: string }) {
 
 export function SectionPage({ section }: { section: string }) {
   const [title, subtitle] = titles[section] ?? ['ไม่พบหน้า', ''];
-  return <main className="min-h-screen px-4 py-8 md:px-8"><div className="mx-auto max-w-7xl"><Header title={title} subtitle={subtitle} />{section === 'roster' ? <Roster /> : <Generic section={section} />}</div></main>;
+  return <main className="min-h-screen px-4 py-8 md:px-8"><div className="mx-auto max-w-7xl"><Header title={title} subtitle={subtitle} />{section === 'roster' ? <Roster /> : section === 'bmi' ? <BmiView /> : <Generic section={section} />}</div></main>;
 }

@@ -19,6 +19,17 @@ create table if not exists students (
   created_at timestamptz default now()
 );
 
+alter table students add column if not exists profile_note text;
+alter table students add column if not exists note_visibility text not null default 'private' check (note_visibility in ('public', 'members', 'private'));
+alter table students add column if not exists show_height boolean not null default true;
+alter table students add column if not exists show_weight boolean not null default true;
+
+create table if not exists site_settings (
+  key text primary key,
+  value jsonb not null default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
+
 alter table profiles
   drop constraint if exists profiles_student_id_fkey;
 
@@ -158,7 +169,7 @@ begin
   insert into public.profiles (id, student_id, full_name)
   values (
     new.id,
-    (select id from public.students where student_code = new.raw_user_meta_data->>'student_code'),
+    (select id from public.students where translate(student_code, '๐๑๒๓๔๕๖๗๘๙', '0123456789') = translate(new.raw_user_meta_data->>'student_code', '๐๑๒๓๔๕๖๗๘๙', '0123456789')),
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'student_code', new.email)
   );
   return new;
@@ -186,6 +197,7 @@ alter table gallery_albums enable row level security;
 alter table gallery_photos enable row level security;
 alter table wall_of_fame enable row level security;
 alter table raffle_draws enable row level security;
+alter table site_settings enable row level security;
 
 do $$
 declare
@@ -199,7 +211,7 @@ begin
         'profiles', 'students', 'bmi_records', 'fee_months', 'fee_payments',
         'duty_types', 'duty_schedule', 'duty_assignments', 'countdown_events',
         'readiness_lists', 'readiness_members', 'announcements',
-        'gallery_albums', 'gallery_photos', 'wall_of_fame', 'raffle_draws'
+        'gallery_albums', 'gallery_photos', 'wall_of_fame', 'raffle_draws', 'site_settings'
       ])
   loop
     execute format('drop policy if exists %I on public.%I', policy_record.policyname, policy_record.tablename);
@@ -233,6 +245,9 @@ create policy "Staff write access" on students for all using (public.is_staff())
 create policy "Members update own phone" on students for update
   using (id = (select student_id from public.profiles where id = auth.uid()))
   with check (id = (select student_id from public.profiles where id = auth.uid()));
+
+create policy "Public read site settings" on site_settings for select using (true);
+create policy "Staff manage site settings" on site_settings for all using (public.is_staff()) with check (public.is_staff());
 
 create policy "Public read access" on bmi_records for select using (true);
 create policy "Staff write access" on bmi_records for all using (public.is_staff()) with check (public.is_staff());
