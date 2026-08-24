@@ -5,10 +5,10 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: '#1B3A57',
+        navy: '#17483B',
         gold: '#C9A227',
         cream: '#F7F3E8',
-        pine: '#2D5F4E',
+        pine: '#0E6B50',
         paper: '#E8E1D1',
         ember: '#B85C38',
       },
