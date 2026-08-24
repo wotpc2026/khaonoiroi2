@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Search, Shuffle, Plus, LockKeyhole } from 'lucide-react';
 import { createClient } from '../../lib/supabase/browser';
 import { BmiView } from './bmi-view';
+import { FeeView } from './fee-view';
 import { normalizeStudentCode } from '../../lib/student-code';
 
 type Student = { order_no: number; student_code: string; full_name: string; platoon: number; squad: number; phone?: string | null };
@@ -53,5 +54,5 @@ function Generic({ section }: { section: string }) {
 
 export function SectionPage({ section }: { section: string }) {
   const [title, subtitle] = titles[section] ?? ['ไม่พบหน้า', ''];
-  return <main className="min-h-screen px-4 py-8 md:px-8"><div className="mx-auto max-w-7xl"><Header title={title} subtitle={subtitle} />{section === 'roster' ? <Roster /> : section === 'bmi' ? <BmiView /> : <Generic section={section} />}</div></main>;
+  return <main className="min-h-screen px-4 py-8 md:px-8"><div className="mx-auto max-w-7xl"><Header title={title} subtitle={subtitle} />{section === 'roster' ? <Roster /> : section === 'bmi' ? <BmiView /> : section === 'fees' ? <FeeView /> : <Generic section={section} />}</div></main>;
 }
