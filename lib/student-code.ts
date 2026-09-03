@@ -5,11 +5,15 @@ export function normalizeDigits(value: string) {
 }
 
 export function normalizeStudentCode(value: string) {
-  return normalizeDigits(value).replace(/\s+/g, '').trim();
+  return normalizeDigits(value).replace(/[–—−]/g, '-').replace(/\s+/g, '').trim();
 }
 
 export function studentAuthEmail(value: string) {
   return `${normalizeStudentCode(value)}@roster.com`;
+}
+
+export function legacyStudentAuthEmail(value: string) {
+  return `${normalizeStudentCode(value)}@roster.local`;
 }
 
 export function parseLocalizedNumber(value: FormDataEntryValue | string | null) {
