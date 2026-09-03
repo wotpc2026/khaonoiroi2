@@ -8,6 +8,10 @@ export function normalizeStudentCode(value: string) {
   return normalizeDigits(value).replace(/\s+/g, '').trim();
 }
 
+export function studentAuthEmail(value: string) {
+  return `${normalizeStudentCode(value)}@roster.com`;
+}
+
 export function parseLocalizedNumber(value: FormDataEntryValue | string | null) {
   const normalized = normalizeDigits(String(value ?? '')).replace(',', '.');
   return Number(normalized);
