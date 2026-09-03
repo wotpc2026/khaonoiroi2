@@ -1,7 +1,7 @@
  'use client';
 
 import Link from 'next/link';
-import { LogIn, Moon, Shield, Sun } from 'lucide-react';
+import { Bell, Home, LogIn, Menu, Moon, Shield, Sun, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createClient } from '../../lib/supabase/browser';
 
@@ -12,6 +12,8 @@ const links = [
   ['สุ่มรายชื่อ', '/raffle'],
 ];
 
+const mobileLinks = [['หน้าแรก', '/', Home], ['สมาชิก', '/roster', Users], ['ประกาศ', '/announcements', Bell], ['งาน', '/duty', Menu]] as const;
+
 export function SiteNav() {
   const [visible, setVisible] = useState<Record<string, boolean>>({});
   const [dark, setDark] = useState(false);
@@ -21,14 +23,18 @@ export function SiteNav() {
   }, []);
   function toggleTheme() { const next = !dark; setDark(next); localStorage.setItem('roster-theme', next ? 'dark' : 'light'); document.documentElement.classList.toggle('dark', next); }
   return (
-    <nav className="border-b border-white/10 bg-navy text-white">
-      <div className="mx-auto flex max-w-7xl items-center gap-5 overflow-x-auto px-4 py-3 md:px-8">
-        <Link href="/" className="mr-2 flex shrink-0 items-center gap-2 font-bold text-gold"><Shield size={20} /> KHAONOI ROI2 63</Link>
-        <div className="flex min-w-max gap-4 text-sm text-white/80">
+    <nav className="desktop-sidebar border-white/10 bg-navy text-white">
+      <div className="desktop-sidebar-inner">
+        <Link href="/" className="flex shrink-0 items-center gap-2 border-b border-white/10 pb-5 font-bold text-gold"><Shield size={20} /> KHAONOI ROI2 63</Link>
+        <div className="hidden min-w-max flex-col gap-1 text-sm text-white/80 lg:flex">
           {links.filter(([, href]) => visible[href.slice(1)] !== false).map(([label, href]) => <Link key={href} href={href} className="transition hover:text-gold">{label}</Link>)}
         </div>
-        <button type="button" onClick={toggleTheme} aria-label="สลับ dark mode" className="shrink-0 text-gold">{dark ? <Sun size={17} /> : <Moon size={17} />}</button>
-        <Link href="/login" className="ml-auto flex shrink-0 items-center gap-1 text-sm text-gold"><LogIn size={16} /> เข้าสู่ระบบ</Link>
+        <div className="mt-auto hidden items-center justify-between lg:flex"><Link href="/login" className="flex items-center gap-1 text-sm text-gold"><LogIn size={16} /> เข้าสู่ระบบ</Link><button type="button" onClick={toggleTheme} aria-label="สลับ dark mode" className="text-gold">{dark ? <Sun size={17} /> : <Moon size={17} />}</button></div>
+      </div>
+      <div className="mobile-topbar lg:hidden"><Link href="/" className="flex items-center gap-2 font-bold text-gold"><Shield size={20} /> KHAONOI ROI2 63</Link><div className="flex items-center gap-4"><button type="button" onClick={toggleTheme} aria-label="สลับ dark mode" className="text-gold">{dark ? <Sun size={18} /> : <Moon size={18} />}</button><Link href="/login" aria-label="เข้าสู่ระบบ" className="text-gold"><LogIn size={18} /></Link></div></div>
+      <div className="mobile-bottom-nav lg:hidden">
+        {mobileLinks.map(([label, href, Icon]) => <Link key={href} href={href} className="mobile-nav-item"><Icon size={18} /><span>{label}</span></Link>)}
+        <Link href="/login" className="mobile-nav-item"><LogIn size={18} /><span>โปรไฟล์</span></Link>
       </div>
     </nav>
   );

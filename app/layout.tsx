@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { Mali } from 'next/font/google';
+import { Noto_Sans_Thai } from 'next/font/google';
 import './globals.css';
 import { SiteNav } from './components/site-nav';
 
-const mali = Mali({
+const notoSansThai = Noto_Sans_Thai({
   subsets: ['thai', 'latin'],
   weight: ['200', '300', '400', '500', '600', '700'],
-  variable: '--font-mali',
+  variable: '--font-noto-thai',
 });
 
 export const metadata: Metadata = {
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th" suppressHydrationWarning>
-      <body className={`${mali.variable}`}>
+      <body className={`${notoSansThai.variable}`}>
         <SiteNav />
-        {children}
+        <div className="lg:pl-64">{children}</div>
       </body>
     </html>
   );

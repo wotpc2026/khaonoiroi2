@@ -12,6 +12,8 @@
   --navy: #17483b;
 }
 
+:root { --primary: #166534; --primary-dark: #14532d; --primary-light: #dcfce7; --page: #f8fafc; --card: #ffffff; --ink: #0f172a; --muted-text: #64748b; --border-soft: #e2e8f0; --success: #16a34a; --warning: #f59e0b; --danger: #dc2626; --info: #2563eb; }
+
 .dark body { background-color: #102a24; background-image: linear-gradient(180deg, #102a24 0%, #163b31 100%); color: #eef7ef; }
 .dark .panel { background-color: rgba(16, 42, 36, 0.86); border-color: rgba(238, 247, 239, 0.14); }
 .dark .text-navy, .dark .section-title { color: #eef7ef; }
@@ -24,7 +26,7 @@ html {
 
 body {
   @apply bg-cream text-navy antialiased;
-  font-family: var(--font-mali), sans-serif;
+  font-family: var(--font-noto-thai), sans-serif;
   background-image:
     linear-gradient(rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
     radial-gradient(circle at top left, rgba(201,162,39,0.12), transparent 32%),
@@ -43,6 +45,37 @@ body {
 
 .reveal-card { animation: rise-in 520ms ease both; }
 .hero-panel { animation: signal-pulse 4s ease-in-out infinite; }
+
+.text-muted { color: var(--muted-text); }
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.page-header h1 { margin-top: 4px; font-size: 32px; font-weight: 700; color: var(--ink); }
+.page-description { margin-top: 4px; color: var(--muted-text); }
+.eyebrow { color: var(--primary); font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.stat-card { padding: 20px; }
+.stat-card strong { display: block; margin-top: 8px; font-size: 30px; color: var(--ink); }
+.stat-card span { color: var(--muted-text); font-size: 13px; }
+.status-badge { display: inline-flex; min-height: 28px; align-items: center; border-radius: 999px; padding: 4px 10px; font-size: 12px; font-weight: 700; }
+.status-neutral { background: #f1f5f9; color: #475569; }
+.status-success { background: #dcfce7; color: #166534; }
+.status-warning { background: #fef3c7; color: #92400e; }
+.status-danger { background: #fee2e2; color: #991b1b; }
+.status-info { background: #dbeafe; color: #1e40af; }
+.button-secondary { min-height: 44px; border: 1px solid var(--border-soft); border-radius: 10px; background: #fff; padding: 8px 16px; color: var(--ink); font-weight: 600; }
+.empty-state { display: flex; min-height: 150px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted-text); text-align: center; }
+.empty-state strong { color: var(--ink); }
+.error-state { color: var(--danger); }
+.skeleton { min-height: 20px; border-radius: 8px; background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%); background-size: 200% 100%; animation: loading 1.4s infinite; }
+@keyframes loading { to { background-position: -200% 0; } }
+.mobile-bottom-nav { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border-soft); background: #fff; padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); box-shadow: 0 -4px 18px rgba(15, 23, 42, .08); }
+.mobile-nav-item { display: flex; min-height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--muted-text); font-size: 11px; }
+.mobile-nav-item:hover { color: var(--primary); }
+.desktop-sidebar { position: fixed; z-index: 40; inset: 0 auto 0 0; width: 16rem; }
+.desktop-sidebar-inner { display: flex; height: 100%; flex-direction: column; gap: 24px; padding: 24px 16px; }
+.desktop-sidebar-inner .hidden a { border-radius: 8px; padding: 10px 12px; }
+.desktop-sidebar-inner .hidden a:hover { background: rgba(255,255,255,.1); }
+.mobile-topbar { display: flex; min-height: 60px; align-items: center; justify-content: space-between; padding: 0 16px; }
+@media (max-width: 1023px) { .desktop-sidebar { position: relative; inset: auto; width: 100%; } }
+@media (max-width: 767px) { body { padding-bottom: 76px; } .page-header { align-items: flex-start; flex-direction: column; } .page-header h1 { font-size: 24px; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
